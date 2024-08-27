@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Center,
   Heading,
@@ -23,11 +24,14 @@ import { signUpSchema } from './schemaValidators';
 import { api } from '@/service/api';
 import { AppError } from '@/utils/AppError';
 import { ToastMessage } from '@/app/components/ToastMessage';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function SignUp() {
-  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
 
+  const navigation = useNavigation();
   const toast = useToast();
+  const { signIn } = useAuth();
 
   const {
     control,
@@ -43,16 +47,19 @@ export function SignUp() {
 
   async function handleSignUp(data: FormDataProps) {
     try {
-      const { name, email, password } = data;
+      setIsLoading(true);
 
-      const response = await api.post('/users', {
+      const { name, email, password } = data;
+      await api.post('/users', {
         name,
         email,
         password,
       });
 
-      console.log(response.data);
+      await signIn(email, password);
     } catch (error) {
+      setIsLoading(true);
+
       const isAppError = error instanceof AppError;
 
       const title = isAppError
@@ -71,6 +78,8 @@ export function SignUp() {
           />
         ),
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -160,6 +169,7 @@ export function SignUp() {
             <Button
               title="Criar e acessar"
               onPress={handleSubmit(handleSignUp)}
+              isLoading={isLoading}
             />
           </Center>
 
