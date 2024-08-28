@@ -63,6 +63,8 @@ export function Exercise() {
           />
         ),
       });
+
+      navigation.navigate('history');
     } catch (error) {
       const isAppError = error instanceof AppError;
 
