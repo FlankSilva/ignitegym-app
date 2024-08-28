@@ -20,6 +20,7 @@ type AuthContextDataProps = {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   loadUserStorageData: () => Promise<void>;
+  updateUserProfile: (user: UserDTO) => Promise<void>;
 };
 
 export const useAuth = create<AuthContextDataProps>((set) => ({
@@ -78,6 +79,16 @@ export const useAuth = create<AuthContextDataProps>((set) => ({
       throw error;
     } finally {
       set({ isLoadingUserStorageData: false });
+    }
+  },
+
+  updateUserProfile: async (userUpdate: UserDTO) => {
+    try {
+      set({ user: userUpdate });
+
+      await storageUserSave(userUpdate);
+    } catch (error) {
+      throw error;
     }
   },
 }));
