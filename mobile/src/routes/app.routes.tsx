@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
@@ -12,13 +13,14 @@ import { Home } from '@/app/screens/Home';
 import { Profile } from '@/app/screens/Profile';
 import { History } from '@/app/screens/History';
 import { Exercise } from '@/app/screens/Exercise';
-import { Platform } from 'react-native';
 
 type AppRoutesProps = {
   home: undefined;
   history: undefined;
   profile: undefined;
-  exercise: undefined;
+  exercise: {
+    exerciseId: string;
+  };
 };
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutesProps>;

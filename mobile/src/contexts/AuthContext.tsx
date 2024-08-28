@@ -39,6 +39,8 @@ export const useAuth = create<AuthContextDataProps>((set) => ({
 
         storageUserSave(data.user);
         storageAuthTokenSave(data.token);
+
+        api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       }
     } catch (error) {
       throw error;
