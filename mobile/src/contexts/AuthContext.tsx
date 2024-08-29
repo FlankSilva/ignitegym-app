@@ -35,11 +35,14 @@ export const useAuth = create<AuthContextDataProps>((set) => ({
         password,
       });
 
-      if (data.user && data.token) {
+      if (data.user && data.token && data.refresh_token) {
         set({ user: data.user });
 
         storageUserSave(data.user);
-        storageAuthTokenSave(data.token);
+        storageAuthTokenSave({
+          token: data.token,
+          refresh_token: data.refresh_token,
+        });
 
         api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       }
@@ -69,7 +72,7 @@ export const useAuth = create<AuthContextDataProps>((set) => ({
       set({ isLoadingUserStorageData: true });
 
       const userStorage = await storageUserGet();
-      const token = await storageAuthTokenGet();
+      const { token } = await storageAuthTokenGet();
 
       if (token && userStorage) {
         set({ user: userStorage });
