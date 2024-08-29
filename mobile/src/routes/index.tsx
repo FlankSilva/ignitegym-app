@@ -8,16 +8,26 @@ import { gluestackUIConfig } from '../../config/gluestack-ui.config';
 import { Box } from '@gluestack-ui/themed';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loading } from '@/app/components/Loading';
+import { api } from '@/service/api';
 
 export function Routes() {
   const theme = DefaultTheme;
   theme.colors.background = gluestackUIConfig.tokens.colors.gray700;
 
-  const { user, loadUserStorageData, isLoadingUserStorageData } = useAuth();
+  const { user, loadUserStorageData, isLoadingUserStorageData, signOut } =
+    useAuth();
 
   useEffect(() => {
     loadUserStorageData();
   }, [loadUserStorageData]);
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(signOut);
+
+    return () => {
+      subscribe();
+    };
+  }, [signOut]);
 
   if (isLoadingUserStorageData) {
     return <Loading />;
